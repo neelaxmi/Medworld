@@ -9,26 +9,33 @@ flow:[
 ["FLOW 04 / 08","Pulmonary circulation","Blood travels through pulmonary arteries to lung capillaries for gas exchange. The pulmonary arterial branches and lungs are not part of the current heart mesh.","pulmonary-trunk",["right-ventricle","pulmonary-trunk"],"#5da9d8"],
 ["FLOW 05 / 08","Pulmonary venous return","Oxygenated blood returns from the lungs through pulmonary veins to the left atrium. Pulmonary veins are atlas references but are not separate meshes in this asset.","left-atrium",["pulmonary-trunk","left-atrium"],"#e66b63"],
 ["FLOW 06 / 08","Left ventricular filling","Blood crosses the mitral valve from the left atrium into the left ventricle. The mitral valve is described in the atlas but is not a selectable mesh.","left-ventricle",["left-atrium","left-ventricle"],"#e66b63"],
-["FLOW 07 / 08","Aortic ejection","Left ventricular contraction raises pressure above aortic pressure. The aortic valve opens and blood is ejected into the ascending aorta.","ascending-aorta",["left-ventricle","ascending-aorta"],"#e66b63"],
-["FLOW 08 / 08","Systemic distribution","The aorta distributes oxygenated blood to systemic tissues. Animated particles connect included 3D structures; omitted vascular segments are explained rather than falsely rendered.","aortic-arch",["ascending-aorta","aortic-arch"],"#e66b63"]],
+["FLOW 07 / 08","Aortic ejection","Left ventricular contraction raises pressure above aortic pressure. The aortic valve opens and blood is ejected into the ascending aorta.","aorta",["left-ventricle","aorta"],"#e66b63"],
+["FLOW 08 / 08","Systemic distribution","The aorta distributes oxygenated blood to systemic tissues. Animated particles connect included 3D structures; omitted vascular segments are explained rather than falsely rendered.","aorta",["aorta","aorta"],"#e66b63"]],
 cycle:[
 ["CYCLE 01 / 06","Passive ventricular filling","During diastole, ventricular pressure is below atrial pressure. The tricuspid and mitral valves are open; the aortic and pulmonary valves are closed.","right-ventricle",null,null],
 ["CYCLE 02 / 06","Atrial systole","Atrial depolarisation (P wave) is followed by atrial contraction, adding the final portion of ventricular filling. AV valves remain open.","right-atrium",null,null],
 ["CYCLE 03 / 06","Isovolumetric contraction","After ventricular depolarisation (QRS), ventricular pressure rises. The mitral and tricuspid valves close (S1); all four valves are briefly closed.","left-ventricle",null,null],
-["CYCLE 04 / 06","Ventricular ejection","When ventricular pressure exceeds aortic and pulmonary arterial pressure, semilunar valves open and blood is ejected into the great arteries.","ascending-aorta",["left-ventricle","ascending-aorta"],"#e66b63"],
+["CYCLE 04 / 06","Ventricular ejection","When ventricular pressure exceeds aortic and pulmonary arterial pressure, semilunar valves open and blood is ejected into the great arteries.","aorta",["left-ventricle","aorta"],"#e66b63"],
 ["CYCLE 05 / 06","Isovolumetric relaxation","Ventricles relax. The aortic and pulmonary valves close (S2); all valves are briefly closed while ventricular pressure falls.","left-ventricle",null,null],
 ["CYCLE 06 / 06","Filling resumes","When ventricular pressure falls below atrial pressure, the AV valves open and ventricular filling begins again.","right-ventricle",null,null]],
+coronary:[
+["CORONARY 01 / 06","Coronary origins","The right and left coronary arteries arise from the right and left aortic sinuses at the aortic root. Focus on the aorta before following the arterial tree.","aorta",["aorta","right-coronary-artery"],"#d66c55"],
+["CORONARY 02 / 06","Right coronary artery","The right coronary artery runs in the right atrioventricular groove and supplies the right atrium and variable portions of the ventricles.","right-coronary-artery",["aorta","right-coronary-artery"],"#d66c55"],
+["CORONARY 03 / 06","Left main coronary artery","The left main coronary artery arises from the left aortic sinus and commonly divides into the LAD and circumflex arteries.","left-main-coronary-artery",["aorta","left-main-coronary-artery"],"#d66c55"],
+["CORONARY 04 / 06","LAD pathway","The LAD travels in the anterior interventricular sulcus and commonly supplies the anterior left ventricular wall, apex and anterior septum.","left-anterior-descending-artery",["left-main-coronary-artery","left-anterior-descending-artery"],"#d66c55"],
+["CORONARY 05 / 06","Circumflex pathway","The circumflex artery courses in the left atrioventricular groove and supplies lateral and sometimes posterolateral left ventricular territories.","circumflex-artery",["left-main-coronary-artery","circumflex-artery"],"#d66c55"],
+["CORONARY 06 / 06","Coronary venous return","Cardiac veins drain myocardium toward the coronary sinus, which opens into the right atrium. Coronary dominance and branch patterns vary between individuals.","coronary-sinus",["cardiac-veins","coronary-sinus"],"#719db7"]],
 electric:[
 ["SIGNAL 01 / 05","SA node fires","The sinoatrial node near the SVC–right atrial junction normally initiates the heartbeat. It is an atlas reference, not a separate mesh in this model.","right-atrium",null,null],
 ["SIGNAL 02 / 05","Atrial depolarisation","The impulse spreads through atrial myocardium, producing the P wave and then atrial contraction.","right-atrium",null,null],
 ["SIGNAL 03 / 05","AV nodal delay","The impulse slows in the AV node near the lower interatrial septum, allowing time for ventricular filling.","left-atrium",null,null],
-["SIGNAL 04 / 05","His–Purkinje system","The impulse travels through the AV bundle, bundle branches and Purkinje network. These pathways are atlas references, not meshes in the current asset.","ventricular-wall",null,null],
+["SIGNAL 04 / 05","His–Purkinje system","The impulse travels through the AV bundle, bundle branches and Purkinje network. These pathways are atlas references, not meshes in the current asset.","left-ventricle",null,null],
 ["SIGNAL 05 / 05","Ventricular activation","Ventricular myocardium depolarises and contracts in a coordinated sequence. This focuses on the ventricular wall; individual conduction fibres are not rendered.","left-ventricle",null,null]],
 control:[
 ["CONTROL 01 / 04","Autonomic regulation","The medulla and autonomic pathways modulate intrinsic cardiac activity; they do not normally initiate each heartbeat.","right-atrium",null,null],
 ["CONTROL 02 / 04","Sympathetic input","Sympathetic cardiac fibres generally increase heart rate, AV conduction velocity and contractility.","right-atrium",null,null],
 ["CONTROL 03 / 04","Parasympathetic input","Vagal activity releases acetylcholine and generally slows SA-node firing and AV-node conduction.","right-atrium",null,null],
-["CONTROL 04 / 04","Integrated response","Autonomic tone interacts with venous return, arterial pressure and circulating hormones to adjust cardiac output.","ventricular-wall",null,null]]
+["CONTROL 04 / 04","Integrated response","Autonomic tone interacts with venous return, arterial pressure and circulating hormones to adjust cardiac output.","left-ventricle",null,null]]
 };
 let tab="flow",index=0,timer=null,readyTimer=null,range;
 function stop(){if(timer)clearInterval(timer);timer=null;play.textContent="▶ Play";}
