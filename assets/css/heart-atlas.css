@@ -68,3 +68,8 @@ body.atlas-cinematic .atlas-mechanism-foot{display:none}
  body.atlas-cinematic .atlas-mech-controls button{font-size:7px;padding:5px 7px}
  body.atlas-cinematic #mechanismTimeline{margin:2px 0;height:9px}
 }
+
+
+body.atlas-cinematic .atlas-selected-badge,body.atlas-cinematic .atlas-visual-legend{position:fixed}
+body.atlas-cinematic #heartCanvas{z-index:1001}
+body.atlas-cinematic .atlas-selected-badge,body.atlas-cinematic .atlas-visual-legend{z-index:1003}
