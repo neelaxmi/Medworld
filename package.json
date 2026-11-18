@@ -1,0 +1,1 @@
+{"name":"neelaxmi-medworld","version":"0.2.0","private":true,"type":"module","scripts":{"dev":"vercel dev","check":"node --check api/mcp.js"},"dependencies":{"@modelcontextprotocol/sdk":"^1.12.1","firebase-admin":"^13.4.0","zod":"^3.25.0"}}
