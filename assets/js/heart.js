@@ -1,95 +1,45 @@
 import * as THREE from "three";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { auth } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
-const host = document.querySelector("#heartCanvas");
-let started = false;
-onAuthStateChanged(auth, user => {
-  if (!user) {
-    const returnTo = encodeURIComponent("./heart.html");
-    window.location.replace("./index.html?auth=login&returnTo=" + returnTo);
-    return;
-  }
-  if (!started) {
-    started = true;
-    startHeartLab();
-  }
-});
-
-function startHeartLab() {
-  if (!host) return;
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color("#09232c");
-  const camera = new THREE.PerspectiveCamera(38, Math.max(host.clientWidth,1) / Math.max(host.clientHeight,1), .1, 100);
-  camera.position.set(0, 0, 8);
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setSize(host.clientWidth, host.clientHeight);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  host.appendChild(renderer.domElement);
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.minDistance = 4;
-  controls.maxDistance = 12;
-  scene.add(new THREE.AmbientLight(0xffffff, 1.7));
-  const key = new THREE.DirectionalLight(0xffd8c8, 3); key.position.set(4,5,7); scene.add(key);
-  const rim = new THREE.PointLight(0x69d8b2, 35); rim.position.set(-4,-2,-3); scene.add(rim);
-  const heart = new THREE.Group(); scene.add(heart);
-  const mats = {
-    right: new THREE.MeshStandardMaterial({color:0x477fbd,roughness:.5}),
-    left: new THREE.MeshStandardMaterial({color:0xb94b55,roughness:.5}),
-    vessel: new THREE.MeshStandardMaterial({color:0xc45e64,roughness:.4}),
-    vein: new THREE.MeshStandardMaterial({color:0x477fbd,roughness:.4})
-  };
-  function ellipsoid(name,pos,scale,mat) {
-    const mesh = new THREE.Mesh(new THREE.SphereGeometry(1,40,32),mat);
-    mesh.name=name; mesh.position.set(...pos); mesh.scale.set(...scale); heart.add(mesh);
-  }
-  function tube(name,points,radius,mat) {
-    const curve = new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));
-    const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve,40,radius,12,false),mat);
-    mesh.name=name; heart.add(mesh);
-  }
-  ellipsoid("Left ventricle",[.48,-.72,0],[.62,1.05,.58],mats.left);
-  ellipsoid("Right ventricle",[-.48,-.68,.04],[.58,.94,.55],mats.right);
-  ellipsoid("Left atrium",[.5,.72,0],[.48,.52,.45],mats.left);
-  ellipsoid("Right atrium",[-.5,.68,.04],[.46,.5,.44],mats.right);
-  tube("Aorta",[[.2,.95,0],[.25,1.5,0],[.25,2,0],[.8,2.15,0],[1.1,1.75,0]],.19,mats.vessel);
-  tube("Pulmonary artery",[[-.25,.55,.08],[-.5,1.1,.08],[-1.1,1.45,.08],[-1.35,1.25,.08]],.15,mats.vein);
-  tube("Superior vena cava",[[-.65,1.95,0],[-.65,1.25,0],[-.55,.9,0]],.17,mats.vein);
-  tube("Inferior vena cava",[[-.55,-1.8,0],[-.55,-1.25,0],[-.55,-.95,0]],.17,mats.vein);
-  const septum = new THREE.Mesh(new THREE.BoxGeometry(.09,1.75,.5),new THREE.MeshStandardMaterial({color:0xd68b83,roughness:.7}));
-  septum.position.set(0,-.15,.05); heart.add(septum);
-  const structures = [
-    ["Left ventricle","Pumps oxygenated blood through the aortic valve into the aorta and systemic circulation.","Its myocardium is thicker because it generates pressure for systemic circulation."],
-    ["Right ventricle","Pumps deoxygenated blood through the pulmonary valve toward the lungs.","Right ventricular pressure is normally much lower than left ventricular pressure."],
-    ["Left atrium","Receives oxygenated blood from the pulmonary veins and passes it to the left ventricle.","The mitral valve lies between the left atrium and left ventricle."],
-    ["Right atrium","Receives systemic venous blood through the venae cavae and passes it to the right ventricle.","The tricuspid valve lies between the right atrium and right ventricle."],
-    ["Aorta","Carries oxygenated blood from the left ventricle to systemic circulation.","The aortic valve prevents backflow during diastole."],
-    ["Pulmonary artery","Carries deoxygenated blood from the right ventricle toward the lungs.","The pulmonary trunk divides into right and left pulmonary arteries."],
-    ["Superior vena cava","Returns venous blood from the upper body to the right atrium.","It is one of the two major systemic veins entering the right atrium."],
-    ["Inferior vena cava","Returns venous blood from the lower body to the right atrium.","It carries blood from the abdomen, pelvis and lower limbs."]
-  ];
-  const list=document.querySelector("#structureList");
-  list.innerHTML=structures.map((s,i)=>'<button type="button" data-i="'+i+'">'+s[0]+'</button>').join("");
-  function choose(i) {
-    const s=structures[i];
-    document.querySelector("#structureName").textContent=s[0];
-    document.querySelector("#structureDescription").textContent=s[1];
-    document.querySelector("#clinicalFact").textContent=s[2];
-    list.querySelectorAll("button").forEach((b,j)=>b.classList.toggle("active",j===i));
-  }
-  list.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>choose(Number(b.dataset.i))));
-  choose(0);
-  document.querySelector("#resetView").onclick=()=>{controls.reset();camera.position.set(0,0,8);};
-  let spinning=true;
-  document.querySelector("#toggleSpin").onclick=e=>{spinning=!spinning;e.currentTarget.textContent=spinning?"Pause rotation":"Resume rotation";};
-  function resize() {
-    const w=Math.max(host.clientWidth,1), h=Math.max(host.clientHeight,1);
-    camera.aspect=w/h; camera.updateProjectionMatrix(); renderer.setSize(w,h);
-  }
-  new ResizeObserver(resize).observe(host);
-  function animate() { requestAnimationFrame(animate); if(spinning) heart.rotation.y+=.0025; controls.update(); renderer.render(scene,camera); }
-  animate();
+const MODEL_URL="https://cdn.jsdelivr.net/gh/organui/heart-3d@c72ce6654ff8e282942f97750d3104f55ef4fc3d/public/models/heart.glb";
+const S=[
+["right-atrium","Right atrium","Heart walls","#a96d70","Receives systemic venous blood returning from the body and passes it to the right ventricle.","Atrial wall shown; chamber cavity omitted.","Receives blood through the superior and inferior venae cavae. The tricuspid valve guards its outlet."],
+["left-atrium","Left atrium","Heart walls","#b77c76","Receives oxygen-rich blood from the pulmonary veins and passes it to the left ventricle.","Best seen posteriorly; chamber cavity omitted.","The mitral valve lies between the left atrium and left ventricle."],
+["ventricular-wall","Ventricular wall","Heart walls","#ab6159","Muscular tissue surrounding the two lower pumping chambers.","Both ventricular walls are combined in one mesh and cannot be selected separately.","The left ventricular myocardium is normally thicker because it generates systemic pressure."],
+["right-ventricle","Right ventricular cavity","Ventricular cavities","#b86661","Space inside the right ventricle, which pumps blood toward the lungs.","Solid surface representing chamber space, not muscle tissue.","Blood leaves through the pulmonary valve into the pulmonary trunk."],
+["left-ventricle","Left ventricular cavity","Ventricular cavities","#d28b72","Space inside the left ventricle, which pumps blood into the aorta.","Solid surface representing chamber space, not muscle tissue.","Blood leaves through the aortic valve into systemic circulation."],
+["ascending-aorta","Ascending aorta","Great vessels","#c37f6a","Initial aortic segment carrying blood away from the left ventricle.","Only the ascending segment is included.","The aortic root and valve are not separate meshes in this model."],
+["aortic-arch","Aortic arch","Great vessels","#ca8d78","Curved part of the aorta continuing into the descending aorta.","Arch branches and descending aorta are omitted.","Normally gives rise to the brachiocephalic trunk, left common carotid and left subclavian arteries."],
+["pulmonary-trunk","Pulmonary trunk","Great vessels","#789aab","Carries deoxygenated blood from the right ventricle toward the lungs.","Right and left pulmonary artery trees are omitted.","The pulmonary trunk divides into right and left pulmonary arteries."],
+["superior-vena-cava","Superior vena cava","Great vessels","#8c9fab","Returns venous blood from the upper body to the right atrium.","Inferior vena cava and pulmonary veins are not included.","One of the two major systemic veins entering the right atrium."],
+["left-coronary","Left coronary artery","Coronary arteries","#dfb58a","Supplies myocardium including much of the left heart and parts of the septum.","Source-mapped branches are grouped as one selectable tree.","Commonly divides into the anterior interventricular (LAD) and circumflex branches."],
+["right-coronary","Right coronary artery","Coronary arteries","#d4a777","Supplies the right atrium and parts of both ventricles.","Source-mapped branches are grouped as one selectable tree.","May give rise to right marginal and posterior interventricular branches."]
+].map(a=>({id:a[0],name:a[1],group:a[2],color:a[3],description:a[4],note:a[5],clinical:a[6]}));
+const byId=new Map(S.map(s=>[s.id,s]));
+const host=document.querySelector("#heartCanvas"),loading=document.querySelector("#modelLoading"),bar=document.querySelector("#loadingProgress"),status=document.querySelector("#modelStatus");
+let booted=false;
+onAuthStateChanged(auth,user=>{if(!user){location.replace("./index.html?auth=login&returnTo="+encodeURIComponent("./heart.html"));return;}if(!booted){booted=true;start();}});
+function start(){
+ const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(34,1,.01,1000),renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});
+ renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;host.appendChild(renderer.domElement);
+ const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;controls.enablePan=false;controls.minDistance=.5;controls.maxDistance=40;
+ scene.add(new THREE.HemisphereLight(0xe8f4ff,0x24313b,2));const key=new THREE.DirectionalLight(0xffe0cf,3.1);key.position.set(5,7,8);scene.add(key);const fill=new THREE.DirectionalLight(0x9acbdf,1.5);fill.position.set(-6,2,-5);scene.add(fill);
+ let model,center=new THREE.Vector3(),radius=2,selected=null;const meshes=[],hidden=new Set(),ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
+ const list=document.querySelector("#structureList"),name=document.querySelector("#structureName"),desc=document.querySelector("#structureDescription"),note=document.querySelector("#structureNote"),clinical=document.querySelector("#clinicalFact");
+ function draw(){list.innerHTML="";["Heart walls","Ventricular cavities","Great vessels","Coronary arteries"].forEach(group=>{const items=S.filter(s=>s.group===group&&(s.name+" "+s.group).toLowerCase().includes(document.querySelector("#structureSearch").value.toLowerCase()));if(!items.length)return;const h=document.createElement("div");h.className="atlas-group";h.textContent=group.toUpperCase();list.appendChild(h);items.forEach(s=>{const b=document.createElement("button");b.className="atlas-item"+(selected===s.id?" active":"");b.type="button";b.innerHTML="<span>"+s.name+"</span><small>"+(hidden.has(s.id)?"HIDDEN":"VIEW")+"</small>";b.onclick=()=>select(s.id);list.appendChild(b);});});}
+ function materials(){meshes.forEach(({mesh,id,mats})=>{mesh.visible=!hidden.has(id);mats.forEach(m=>{const ghost=selected!==null&&selected!==id;m.transparent=ghost;m.opacity=ghost?.24:1;m.depthWrite=!ghost;m.color.set(!ghost?byId.get(id).color:"#aab8bb");m.emissive.set(selected===id?"#56382f":"#000000");m.emissiveIntensity=selected===id?.23:0;m.needsUpdate=true;});});}
+ function select(id){const s=byId.get(id);if(!s)return;selected=id;name.textContent=s.name;desc.textContent=s.description;note.textContent=s.note;clinical.textContent=s.clinical;draw();materials();}
+ function view(d){camera.position.copy(center).addScaledVector(new THREE.Vector3(...d).normalize(),radius*2.9);camera.near=Math.max(.01,radius/100);camera.far=radius*30;camera.updateProjectionMatrix();controls.target.copy(center);controls.update();}
+ function resize(){const w=Math.max(host.clientWidth,1),h=Math.max(host.clientHeight,1);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);}new ResizeObserver(resize).observe(host);resize();
+ document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{view(b.dataset.view==="Posterior"?[0,0,-1]:b.dataset.view==="Left lateral"?[1,0,0]:[0,0,1]);document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x===b));});
+ document.querySelector("#resetView").onclick=()=>{hidden.clear();select(selected||"right-atrium");view([0,0,1]);document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view==="Anterior"));};
+ document.querySelector("#isolateStructure").onclick=()=>{if(!selected)return;hidden.clear();S.forEach(s=>{if(s.id!==selected)hidden.add(s.id);});materials();draw();};
+ document.querySelector("#restoreStructures").onclick=()=>{hidden.clear();materials();draw();};
+ document.querySelector("#structureSearch").oninput=draw;
+ let down=null;renderer.domElement.addEventListener("pointerdown",e=>down={x:e.clientX,y:e.clientY});renderer.domElement.addEventListener("pointerup",e=>{if(!down||Math.hypot(e.clientX-down.x,e.clientY-down.y)>6){down=null;return;}down=null;const r=renderer.domElement.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pointer,camera);for(const hit of ray.intersectObjects(model?[model]:[],true)){let o=hit.object,id=null;while(o&&o!==model){const candidate=o.userData?.structureId||o.name;if(byId.has(candidate)){id=candidate;break;}o=o.parent;}if(id&&!hidden.has(id)){select(id);break;}}});
+ function fail(msg){status.textContent="MODEL ERROR";loading.style.display="none";const box=document.createElement("div");box.className="atlas-error";box.innerHTML="<div><h2>3D model unavailable</h2><p>"+msg+"</p><button type='button'>Retry model load</button></div>";host.appendChild(box);box.querySelector("button").onclick=()=>location.reload();}
+ async function load(){try{const url=MODEL_URL;const res=await fetch(url);if(!res.ok)throw Error("Model server returned HTTP "+res.status);const total=Number(res.headers.get("content-length"))||2524400,reader=res.body?.getReader();let data;if(reader){const chunks=[];let n=0;while(true){const x=await reader.read();if(x.done)break;chunks.push(x.value);n+=x.value.length;bar.style.width=Math.min(96,n/total*96)+"%";document.querySelector("#loadingText").textContent="Downloading anatomical model · "+Math.round(n/total*100)+"%";}const bytes=new Uint8Array(n);let p=0;chunks.forEach(c=>{bytes.set(c,p);p+=c.length;});data=bytes.buffer;}else data=await res.arrayBuffer();model=(await new GLTFLoader().parseAsync(data,"")).scene;const found=new Set();model.traverse(o=>{if(!o.isMesh)return;const id=o.userData?.structureId||o.name;if(!byId.has(id))return;found.add(id);o.userData.structureId=id;const mats=(Array.isArray(o.material)?o.material:[o.material]).map(m=>m.clone());o.material=Array.isArray(o.material)?mats:mats[0];mats.forEach(m=>{m.roughness=.62;m.metalness=.02;});meshes.push({mesh:o,id,mats});});const missing=S.filter(s=>!found.has(s.id)).map(s=>s.name);if(missing.length)throw Error("Model structure mapping mismatch: "+missing.join(", "));scene.add(model);const box=new THREE.Box3().setFromObject(model);box.getCenter(center);radius=box.getBoundingSphere(new THREE.Sphere()).radius;view([0,0,1]);select("right-atrium");bar.style.width="100%";loading.style.display="none";status.textContent="MODEL READY";document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view==="Anterior"));animate();}catch(e){fail(e instanceof Error?e.message:"Could not decode model.");}}
+ let frame;function animate(){cancelAnimationFrame(frame);const loop=()=>{frame=requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);};loop();}load();
 }
