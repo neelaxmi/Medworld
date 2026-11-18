@@ -37,7 +37,7 @@ function render(){const data=datasets[tab],x=data[index];step.textContent=x[0];s
 function setTab(t){stop();tab=t;index=0;tabs.forEach(b=>b.classList.toggle("active",b.dataset.mechTab===t));render();}
 function close(){stop();clearInterval(readyTimer);dialog.hidden=true;document.body.classList.remove("atlas-dialog-open");window.MedworldHeart?.exitLab();}
 function open(){dialog.hidden=false;document.body.classList.add("atlas-dialog-open");window.MedworldHeart?.enterLab();setTab("flow");let tries=0;readyTimer=setInterval(()=>{tries++;if(window.MedworldHeart?.getReady()){clearInterval(readyTimer);animateStep();}if(tries>80)clearInterval(readyTimer);},250);}
-range=document.createElement("input");range.type="range";range.id="mechanismTimeline";range.min="0";range.max="7";range.step="1";range.value="0";range.setAttribute("aria-label","Simulation timeline");range.addEventListener("input",()=>{stop();index=Number(range.value);render();});$("#mechanismPlay").parentElement.parentElement.insertBefore(range,$("#mechanismPlay").parentElement);
+range=document.createElement("input");range.type="range";range.id="mechanismTimeline";range.min="0";range.max="7";range.step="1";range.value="0";range.setAttribute("aria-label","Simulation timeline");range.addEventListener("input",()=>{stop();index=Number(range.value);render();});const controls=$("#mechanismPlay").parentElement;controls.parentElement.insertBefore(range,controls);
 $("#openMechanism").addEventListener("click",open);$("#closeMechanism").addEventListener("click",close);dialog.addEventListener("click",e=>{if(e.target===dialog)close();});
 tabs.forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.mechTab)));
 $("#mechanismPrev").addEventListener("click",()=>{stop();index=Math.max(0,index-1);render();});
