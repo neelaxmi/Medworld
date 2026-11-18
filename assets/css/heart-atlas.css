@@ -23,3 +23,48 @@ body.atlas-cinematic #mechanismTimeline{margin:5px 0 7px}
 body.atlas-cinematic .atlas-mech-controls{justify-content:space-between}
 body.atlas-cinematic .atlas-mech-controls button{padding:8px 10px}
 @media(max-width:760px){body.atlas-cinematic .atlas-mechanism-window{width:calc(100% - 12px);bottom:max(6px,env(safe-area-inset-bottom));padding:11px 12px;max-height:62dvh;border-radius:12px}body.atlas-cinematic .atlas-mechanism-head h2{font-size:17px}body.atlas-cinematic .atlas-mechanism-head p{font-size:9px}body.atlas-cinematic .atlas-mechanism-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}body.atlas-cinematic .atlas-mechanism-tabs button{font-size:9px;padding:7px 4px}body.atlas-cinematic .atlas-mech-copy h3{font-size:16px}body.atlas-cinematic .atlas-mech-copy p{font-size:10px}body.atlas-cinematic .atlas-mech-controls{gap:4px}body.atlas-cinematic .atlas-mech-controls button{font-size:9px;padding:8px 7px}}
+
+
+/* Anatomical colour language and a non-obstructive lab HUD */
+.atlas-selected-badge{position:absolute;z-index:4;top:16px;left:16px;display:flex;align-items:center;gap:10px;padding:9px 13px;border:1px solid #56717b;border-radius:10px;background:#0b1a22dc;backdrop-filter:blur(12px);box-shadow:0 8px 25px #0005}
+.atlas-selected-badge>i{width:12px;height:28px;border-radius:5px;background:#a83e48}.atlas-selected-badge small{display:block;font-size:8px;letter-spacing:.15em;color:#8da6ad}.atlas-selected-badge b{display:block;font-size:12px;color:#f0f7f6;margin-top:3px}
+.atlas-visual-legend{position:absolute;z-index:4;top:16px;right:16px;display:flex;flex-direction:column;gap:7px;padding:11px 13px;border:1px solid #49616b;border-radius:9px;background:#0b1a22d9;backdrop-filter:blur(12px)}
+.atlas-visual-legend>b{font-size:8px;letter-spacing:.13em;color:#c2d3d5;margin-bottom:2px}.atlas-visual-legend span{display:flex;align-items:center;gap:7px;font-size:9px;color:#c0d0d1}.atlas-visual-legend i{width:9px;height:9px;border-radius:50%;display:inline-block}.key-muscle{background:#a83e48}.key-oxygen{background:#df514e}.key-deoxy{background:#4d9ed0}.key-valve{background:#d9c9a7}.key-nerve{background:#e6c36d}
+body.atlas-cinematic .atlas-viewbar,body.atlas-cinematic .atlas-bottom,body.atlas-cinematic .atlas-view-caption{display:none}
+body.atlas-cinematic .atlas-selected-badge{top:max(14px,env(safe-area-inset-top));left:14px}
+body.atlas-cinematic .atlas-visual-legend{top:max(14px,env(safe-area-inset-top));right:14px}
+body.atlas-cinematic .atlas-mechanism{pointer-events:none}
+body.atlas-cinematic .atlas-mechanism-window{left:12px;right:12px;bottom:max(10px,env(safe-area-inset-bottom));transform:none;width:auto;max-height:190px;overflow:visible;padding:10px 14px;border:1px solid #45616c;border-radius:13px;background:linear-gradient(100deg,rgba(5,18,26,.92),rgba(10,28,37,.86));box-shadow:0 10px 40px #0007}
+body.atlas-cinematic .atlas-mechanism-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+body.atlas-cinematic .atlas-mechanism-head h2{font-size:14px;margin:2px 0}
+body.atlas-cinematic .atlas-mechanism-head p{display:none}
+body.atlas-cinematic .atlas-mechanism-head .atlas-systems-kicker{font-size:7px}
+body.atlas-cinematic .atlas-mechanism-head>button{padding:5px 8px}
+body.atlas-cinematic .atlas-mechanism-tabs{display:flex;gap:5px;overflow-x:auto;white-space:nowrap;margin:6px 0 3px;padding:0 0 4px}
+body.atlas-cinematic .atlas-mechanism-tabs button{flex:0 0 auto;padding:5px 8px;font-size:8px}
+body.atlas-cinematic .atlas-mechanism-body{display:block;padding:2px 0}
+body.atlas-cinematic .atlas-mech-visual{display:none}
+body.atlas-cinematic .atlas-mech-copy{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"phase controls" "title controls" "text text" "progress progress";align-items:center;column-gap:12px}
+body.atlas-cinematic .atlas-mech-copy>span{grid-area:phase;font-size:7px}
+body.atlas-cinematic .atlas-mech-copy h3{grid-area:title;font-size:13px;margin:1px 0 3px}
+body.atlas-cinematic .atlas-mech-copy p{grid-area:text;font-size:9px;line-height:1.35;margin:0 0 3px;max-width:1100px}
+body.atlas-cinematic .atlas-mech-copy .atlas-mech-progress{grid-area:progress;margin:2px 0 0;height:3px}
+body.atlas-cinematic .atlas-mech-controls{grid-area:controls;align-self:center;gap:4px}
+body.atlas-cinematic .atlas-mech-controls button{font-size:8px;padding:6px 8px}
+body.atlas-cinematic #mechanismTimeline{height:10px;margin:1px 0 3px}
+body.atlas-cinematic .atlas-mechanism-foot{display:none}
+@media(max-width:760px){
+ .atlas-visual-legend{top:auto;right:9px;bottom:55px;gap:5px;padding:8px 9px}.atlas-visual-legend span{font-size:8px}.atlas-visual-legend>b{font-size:7px}
+ .atlas-selected-badge{top:9px;left:9px;padding:7px 9px}.atlas-selected-badge b{font-size:10px}
+ body.atlas-cinematic .atlas-visual-legend{top:max(9px,env(safe-area-inset-top));bottom:auto;right:9px}
+ body.atlas-cinematic .atlas-mechanism-window{left:6px;right:6px;bottom:max(6px,env(safe-area-inset-bottom));max-height:34dvh;padding:8px 9px;border-radius:10px}
+ body.atlas-cinematic .atlas-mechanism-head h2{font-size:12px}
+ body.atlas-cinematic .atlas-mechanism-tabs{gap:3px;margin:4px 0}
+ body.atlas-cinematic .atlas-mechanism-tabs button{font-size:7px;padding:5px 6px}
+ body.atlas-cinematic .atlas-mech-copy{grid-template-columns:1fr;grid-template-areas:"phase" "title" "text" "progress" "controls"}
+ body.atlas-cinematic .atlas-mech-copy h3{font-size:12px}
+ body.atlas-cinematic .atlas-mech-copy p{font-size:8px;line-height:1.3;max-height:45px;overflow:auto}
+ body.atlas-cinematic .atlas-mech-controls{justify-content:space-between;margin-top:3px}
+ body.atlas-cinematic .atlas-mech-controls button{font-size:7px;padding:5px 7px}
+ body.atlas-cinematic #mechanismTimeline{margin:2px 0;height:9px}
+}
