@@ -73,3 +73,13 @@ body.atlas-cinematic .atlas-mechanism-foot{display:none}
 body.atlas-cinematic .atlas-selected-badge,body.atlas-cinematic .atlas-visual-legend{position:fixed}
 body.atlas-cinematic #heartCanvas{z-index:1001}
 body.atlas-cinematic .atlas-selected-badge,body.atlas-cinematic .atlas-visual-legend{z-index:1003}
+
+
+/* Compact physiology legend and selected 3D anatomy label. Existing layout remains unchanged. */
+.atlas-flow-legend{position:absolute;z-index:1004;top:14px;right:14px;display:flex;flex-direction:column;gap:6px;min-width:164px;padding:11px 13px;border:1px solid rgba(183,213,224,.2);border-radius:12px;background:rgba(7,19,28,.84);color:#e8f0f3;font:10px/1.35 Inter,system-ui,sans-serif;backdrop-filter:blur(12px);pointer-events:none}
+.atlas-flow-legend[hidden]{display:none}
+.atlas-flow-legend b{font-size:9px;letter-spacing:.13em;color:#9eb6c2;margin-bottom:2px}
+.atlas-flow-legend span{display:flex;align-items:center;gap:8px}
+.atlas-flow-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;box-shadow:0 0 8px currentColor}
+.atlas-flow-legend small{margin-top:3px;max-width:190px;color:#9fb1bb;font-size:8px;line-height:1.4}
+@media(max-width:760px){.atlas-flow-legend{top:8px;right:8px;min-width:128px;padding:8px 9px;gap:4px;font-size:8px}.atlas-flow-legend b{font-size:8px}.atlas-flow-legend small{font-size:7px;max-width:145px}}
