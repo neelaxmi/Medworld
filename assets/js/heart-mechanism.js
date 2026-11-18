@@ -31,7 +31,8 @@ const scenes={
   ["04 / HIS–PURKINJE SYSTEM","Rapid ventricular conduction","The impulse travels through the AV bundle, right and left bundle branches, and Purkinje fibres. These structures require a dedicated segmented conduction model; they are not present in the current GLB.","ventricular-wall",[],"#f1c85b"]
  ]
 };
-let mode="flow",index=0,timer=null,playing=false;\nconst scrub=document.createElement("input");scrub.type="range";scrub.min="0";scrub.step="1";scrub.className="cinema-scrubber";scrub.setAttribute("aria-label","Simulation timeline");$("#mechanismProgress").parentElement.after(scrub);scrub.addEventListener("input",()=>{stop();index=Number(scrub.value);render();});
+let mode="flow",index=0,timer=null,playing=false;
+const scrub=document.createElement("input");scrub.type="range";scrub.min="0";scrub.step="1";scrub.className="cinema-scrubber";scrub.setAttribute("aria-label","Simulation timeline");$("#mechanismProgress").parentElement.after(scrub);scrub.addEventListener("input",()=>{stop();index=Number(scrub.value);render();});
 function render(){
  const list=scenes[mode],s=list[index];scrub.max=String(list.length-1);scrub.value=String(index);step.textContent=s[0];title.textContent=s[1];copy.textContent=s[2];progress.style.width=((index+1)/list.length*100)+"%";
  $("#mechanismPrev").disabled=index===0;$("#mechanismNext").disabled=index===list.length-1;
