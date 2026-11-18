@@ -96,6 +96,5 @@ function updateStructureLabel(id){
 }
 function meshCenter(id){const entry=meshes.find(x=>x.id===id);if(!entry)return null;const b=new THREE.Box3().setFromObject(entry.mesh);return b.getCenter(new THREE.Vector3());}
 function focusStructure(id,duration=1500){const p=meshCenter(id);if(!p)return false;const direction=camera.position.clone().sub(controls.target).normalize();const distance=Math.max(radius*.92,camera.position.distanceTo(controls.target)*.48);const fromTarget=controls.target.clone(),fromPos=camera.position.clone(),toTarget=p.clone(),toPos=p.clone().addScaledVector(direction,distance);const start=performance.now();function tick(now){const t=Math.min(1,(now-start)/duration),e=1-Math.pow(1-t,3);controls.target.lerpVectors(fromTarget,toTarget,e);camera.position.lerpVectors(fromPos,toPos,e);controls.update();if(t<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);return true;}
-window.MedworldHeart={focusStructure,selectStructure:(id)=>select(id)};
 let frame;function animate(){cancelAnimationFrame(frame);const loop=()=>{frame=requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);};loop();}load();
 }
