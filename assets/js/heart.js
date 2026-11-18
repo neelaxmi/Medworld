@@ -94,88 +94,8 @@ function updateStructureLabel(id){
  labelLeader=new THREE.Line(lineGeo,new THREE.LineBasicMaterial({color:s.color,depthTest:false,transparent:true,opacity:.95}));labelLeader.renderOrder=999;labelGroup.add(labelLeader);
  labelDot=new THREE.Mesh(new THREE.SphereGeometry(radius*.012,12,12),new THREE.MeshBasicMaterial({color:s.color,depthTest:false}));labelDot.position.copy(anchor);labelDot.renderOrder=1001;labelGroup.add(labelDot);
 }
-let flowLegend=null;
-function setFlowLegend(visible){
- if(!flowLegend){
-  flowLegend=document.createElement("div");flowLegend.className="atlas-flow-legend";
-  flowLegend.innerHTML='<b>ANATOMY COLOUR KEY</b><span><i style="background:#a64b4d"></i>Myocardium</span><span><i style="background:#d34f43"></i>Oxygenated blood</span><span><i style="background:#397fb5"></i>Deoxygenated blood</span><span><i style="background:#d8cbb0"></i>Valves</span><span><i style="background:#e9c65d"></i>Conduction</span><small>Flow markers follow a mesh-derived illustrative trajectory.</small>';
-  host.appendChild(flowLegend);
- }
- flowLegend.hidden=!visible;
-}
 function meshCenter(id){const entry=meshes.find(x=>x.id===id);if(!entry)return null;const b=new THREE.Box3().setFromObject(entry.mesh);return b.getCenter(new THREE.Vector3());}
 function focusStructure(id,duration=1500){const p=meshCenter(id);if(!p)return false;const direction=camera.position.clone().sub(controls.target).normalize();const distance=Math.max(radius*.92,camera.position.distanceTo(controls.target)*.48);const fromTarget=controls.target.clone(),fromPos=camera.position.clone(),toTarget=p.clone(),toPos=p.clone().addScaledVector(direction,distance);const start=performance.now();function tick(now){const t=Math.min(1,(now-start)/duration),e=1-Math.pow(1-t,3);controls.target.lerpVectors(fromTarget,toTarget,e);camera.position.lerpVectors(fromPos,toPos,e);controls.update();if(t<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);return true;}
-let flowGroup=null,flowFrame=0,flowCurves=[],flowMaterials=[],flowClock=0;
-const VASCULAR_IDS=new Set(["aorta","pulmonary-trunk","superior-vena-cava","inferior-vena-cava","pulmonary-veins","right-coronary-artery","left-main-coronary-artery","left-anterior-descending-artery","circumflex-artery","coronary-sinus","cardiac-veins"]);
-function clearFlow(){
- if(flowGroup){scene.remove(flowGroup);flowGroup.traverse(o=>{o.geometry?.dispose();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose();}});flowGroup=null;}
- flowCurves=[];flowMaterials=[];cancelAnimationFrame(flowFrame);
- meshes.forEach(({mats})=>mats.forEach(m=>{if(m.userData.flowBase!==undefined){m.emissiveIntensity=m.userData.flowBase;delete m.userData.flowBase;}}));
-}
-function geometryFlowCurve(entry,fromPoint,toPoint){
- const pos=entry.mesh.geometry?.attributes?.position;if(!pos||pos.count<12)return null;
- const world=[];const step=Math.max(1,Math.floor(pos.count/12000));
- const p=new THREE.Vector3();
- for(let i=0;i<pos.count;i+=step){p.fromBufferAttribute(pos,i);entry.mesh.localToWorld(p);world.push(p.clone());}
- if(world.length<12)return null;
- const bounds=new THREE.Box3().setFromPoints(world),size=bounds.getSize(new THREE.Vector3());
- const axis=size.x>=size.y&&size.x>=size.z?"x":size.y>=size.z?"y":"z";
- const min=bounds.min[axis],span=Math.max(bounds.max[axis]-min,1e-6),bins=Array.from({length:44},()=>({sum:new THREE.Vector3(),n:0}));
- world.forEach(v=>{const k=Math.min(43,Math.floor((v[axis]-min)/span*44));bins[k].sum.add(v);bins[k].n++;});
- let points=bins.filter(b=>b.n).map(b=>b.sum.multiplyScalar(1/b.n));
- if(points.length<5)return null;
- if(fromPoint&&toPoint){
-  const forward=points[0].distanceTo(fromPoint)+points[points.length-1].distanceTo(toPoint);
-  const reverse=points[points.length-1].distanceTo(fromPoint)+points[0].distanceTo(toPoint);
-  if(reverse<forward)points.reverse();
- }else if(fromPoint&&points[points.length-1].distanceTo(fromPoint)<points[0].distanceTo(fromPoint))points.reverse();
- else if(toPoint&&points[0].distanceTo(toPoint)<points[points.length-1].distanceTo(toPoint))points.reverse();
- return new THREE.CatmullRomCurve3(points,false,"centripetal",.35);
-}
-function startFlow(ids,color){
- clearFlow();flowGroup=new THREE.Group();scene.add(flowGroup);flowClock=performance.now();
- const valid=ids.map(id=>({id,entry:meshes.find(x=>x.id===id)})).filter(x=>x.entry&&VASCULAR_IDS.has(x.id));
- valid.forEach((item,i)=>{
-  const previous=i>0?meshCenter(ids[ids.indexOf(item.id)-1]):null;
-  const next=i<ids.length-1?meshCenter(ids[ids.indexOf(item.id)+1]):null;
-  const curve=geometryFlowCurve(item.entry,previous,next);if(!curve)return;
-  flowCurves.push({curve,offset:i*.17});
-  item.entry.mats.forEach(m=>{m.userData.flowBase=m.emissiveIntensity||0;});
-  const count=18,geo=new THREE.SphereGeometry(Math.max(radius*.006,.006),8,8);
-  const mat=new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98,depthWrite:false});
-  const particles=[];
-  for(let n=0;n<count;n++){const dot=new THREE.Mesh(geo,mat);flowGroup.add(dot);particles.push(dot);}
-  flowMaterials.push({entry:item.entry,particles,mat,offset:i*.17});
- });
- if(!flowCurves.length)return;
- const animateFlow=now=>{
-  if(!flowGroup)return;const t=(now-flowClock)*.00011;
-  flowMaterials.forEach(({entry,particles,offset},j)=>{
-   entry.mats.forEach(m=>{m.emissive.set(color);m.emissiveIntensity=.12+.32*(.5+.5*Math.sin(t*2-offset));});
-   const curve=flowCurves[j]?.curve;if(!curve)return;
-   particles.forEach((dot,n)=>{const u=(t+offset+n/particles.length)%1;dot.position.copy(curve.getPointAt(u));});
-  });
-  flowFrame=requestAnimationFrame(animateFlow);
- };
- flowFrame=requestAnimationFrame(animateFlow);
-}
-let pulseFrame=null;
-function setPulse(on){
- if(!model)return;window.MedworldHeart.pulseActive=!!on;if(pulseFrame)cancelAnimationFrame(pulseFrame);
- const atria=meshes.filter(x=>x.id==="right-atrium"||x.id==="left-atrium");
- const ventricles=meshes.filter(x=>x.id==="right-ventricle"||x.id==="left-ventricle");
- [...atria,...ventricles].forEach(({mats})=>mats.forEach(m=>{m.emissive.set("#000000");m.emissiveIntensity=0;}));
- if(on){const tick=()=>{if(!window.MedworldHeart?.pulseActive)return;const t=performance.now()*.0038;
-  [...atria,...ventricles].forEach(({id,mats})=>{const phase=id.includes("atrium")?0:2.15;const activation=Math.max(0,Math.sin(t-phase));mats.forEach(m=>{m.emissive.set("#ff806c");m.emissiveIntensity=activation*.5;});});
-  pulseFrame=requestAnimationFrame(tick);};pulseFrame=requestAnimationFrame(tick);}
-}
-window.MedworldHeart={
- focusStructure,clearFlow,startFlow,setPulse,
- setView:(v)=>view(v==="posterior"?[0,0,-1]:v==="left"?[1,0,0]:v==="right"?[-1,0,0]:[0,0,1]),
- getReady:()=>!!model,
- enterLab:()=>{document.body.classList.add("atlas-cinematic");setFlowLegend(true);resize();},
- exitLab:()=>{document.body.classList.remove("atlas-cinematic");setFlowLegend(false);clearFlow();setPulse(false);resize();},
- selectStructure:(id)=>select(id)
-};
+window.MedworldHeart={focusStructure,selectStructure:(id)=>select(id)};
 let frame;function animate(){cancelAnimationFrame(frame);const loop=()=>{frame=requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);};loop();}load();
 }
