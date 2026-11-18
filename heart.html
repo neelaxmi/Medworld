@@ -1,43 +1,42 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Heart Anatomy Workstation | NEELAXMI MEDWORLD</title>
-<link rel="stylesheet" href="./assets/css/styles.css">
-<link rel="stylesheet" href="./assets/css/heart-atlas.css">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Heart Anatomy Lab | NEELAXMI MEDWORLD</title>
+<link rel="stylesheet" href="./assets/css/styles.css"><link rel="stylesheet" href="./assets/css/heart-atlas.css">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"}}</script>
-<script type="module" src="./assets/js/heart.js"></script>
-</head>
+<script type="module" src="./assets/js/heart.js"></script></head>
 <body class="atlas-page">
-<header class="atlas-top">
-<a class="atlas-brand" href="./learning.html">NEELAXMI <span style="color:#65d6c2">+</span><small>MEDWORLD · ANATOMY LAB</small></a>
-<nav><a href="./learning.html">Learning</a><a href="./research.html">Research</a></nav>
-<div class="atlas-user">3D MEDICAL ATLAS / HEART</div>
-</header>
-<main class="atlas-wrap">
-<section class="atlas-title">
-<div><div class="atlas-eyebrow">INTERACTIVE ANATOMY · CARDIOVASCULAR SYSTEM</div><h1>Human <em>heart.</em></h1><p>Explore a real anatomical surface model. Select a structure, isolate it, and inspect it from different views.</p></div>
-<div class="atlas-badge">BODY PARTS 3D · 4.0 MODEL</div>
-</section>
-<section class="atlas-layout">
+<header class="atlas-top"><a class="atlas-brand" href="./learning.html">NEELAXMI <span style="color:#65d6c2">+</span><small>MEDWORLD · ANATOMY LAB</small></a><nav><a href="./learning.html">Learning</a><a href="./research.html">Research Centre ↗</a></nav><div class="atlas-user">INTERACTIVE 3D / CARDIOVASCULAR</div></header>
+<main class="atlas-workspace">
+<aside class="atlas-library">
+<div class="atlas-side-kicker">MEDICAL LIBRARY</div><h2>Explore<br><em>knowledge.</em></h2>
+<p class="atlas-side-copy">A connected space for anatomy, imaging and evidence-based learning.</p>
+<div class="atlas-side-label">HEART / QUICK ACCESS</div>
+<a class="atlas-side-link active" href="./heart.html"><span>◉</span> Heart anatomy <small>3D</small></a>
+<a class="atlas-side-link" href="./research.html"><span>⌕</span> Research centre <small>↗</small></a>
+<div class="atlas-side-label">MEDICAL INFORMATION</div>
+<div class="atlas-info-card"><b>ANATOMY</b><p>Structure, position, relations and morphology of the selected part.</p></div>
+<div class="atlas-info-card"><b>IMAGING / ULTRASOUND</b><p>Imaging concepts and interpretation guides can be explored alongside the anatomy.</p><span class="atlas-coming">REFERENCE LIBRARY · EXPANDING</span></div>
+<div class="atlas-side-foot">NEELAXMI MEDWORLD<br><span>Learn the structure. Understand the science.</span></div>
+</aside>
+<section class="atlas-main">
+<div class="atlas-main-head"><div><div class="atlas-eyebrow">ANATOMY LAB / 01</div><h1>Human <em>heart</em></h1><p>Select a visible structure or choose it from the explorer. The information panels update with your selection.</p></div><div class="atlas-model-tag"><span class="atlas-live-dot"></span> 3D MODEL WORKSPACE</div></div>
 <div class="atlas-viewer">
 <div id="heartCanvas" aria-label="Interactive 3D anatomical heart model"></div>
 <div class="atlas-loading" id="modelLoading"><div id="loadingText">Loading anatomical model…</div><div class="atlas-progress"><span id="loadingProgress"></span></div></div>
-<div class="atlas-viewbar">
-<div class="atlas-viewcontrols"><button class="atlas-tool" data-view="Anterior">ANTERIOR</button><button class="atlas-tool" data-view="Posterior">POSTERIOR</button><button class="atlas-tool" data-view="Left lateral">LATERAL</button></div>
-<div class="atlas-viewcontrols"><button class="atlas-tool" id="resetView">RESET</button></div>
+<div class="atlas-viewbar"><div class="atlas-viewcontrols"><button class="atlas-tool" data-view="Anterior">ANTERIOR</button><button class="atlas-tool" data-view="Posterior">POSTERIOR</button><button class="atlas-tool" data-view="Left lateral">LATERAL</button></div><div class="atlas-viewcontrols"><button class="atlas-tool" id="resetView">RESET VIEW</button></div></div>
+<div class="atlas-bottom"><span>DRAG TO ROTATE</span><span>SCROLL / PINCH TO ZOOM</span><span>TAP A STRUCTURE TO INSPECT</span></div>
+<div class="atlas-view-caption"><span>3D ANATOMICAL MODEL</span><span>BODY PARTS 3D · CC BY 4.0</span></div>
 </div>
-<div class="atlas-bottom">DRAG TO ROTATE · PINCH / SCROLL TO ZOOM · TAP STRUCTURE TO SELECT</div>
-</div>
-<aside class="atlas-panel">
-<div class="atlas-panel-head"><span>STRUCTURE EXPLORER</span><span class="atlas-status" id="modelStatus">LOADING</span></div>
-<div class="atlas-selected"><h2 id="structureName">Heart anatomy</h2><p id="structureDescription">The anatomical model is loading. Select any visible structure in the 3D view or use the structure list.</p><div class="atlas-note" id="structureNote"></div></div>
-<input class="atlas-search" id="structureSearch" type="search" placeholder="Search anatomical structures…" aria-label="Search anatomical structures">
-<div class="atlas-structures" id="structureList"></div>
-<div class="atlas-actions"><button id="isolateStructure">Isolate selected</button><button id="restoreStructures">Show all</button></div>
-<div class="atlas-clinical"><b>ANATOMICAL CONTEXT</b><p id="clinicalFact">This reference model contains selected heart walls, ventricular cavity surfaces, great-vessel segments and coronary artery trees. It is not a complete dissection atlas.</p></div>
-<div class="atlas-credit">Model: <b>BodyParts3D</b>, © The Database Center for Life Science, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>. Curated and adapted by OrganUI. Educational use only; expert anatomical review is pending.</div>
-</aside>
+<div class="atlas-model-toolbar"><div><b>MODEL CONTROLS</b><span>Focus and inspect individual structures</span></div><div class="atlas-actions"><button id="isolateStructure">Isolate selected</button><button id="restoreStructures">Show all structures</button></div></div>
 </section>
+<aside class="atlas-details">
+<div class="atlas-detail-head"><div><div class="atlas-side-kicker">SELECTED STRUCTURE</div><span class="atlas-status" id="modelStatus">LOADING MODEL</span></div><span class="atlas-detail-icon">✳</span></div>
+<div class="atlas-selected"><div class="atlas-selected-group" id="structureGroup">HEART ANATOMY</div><h2 id="structureName">Heart anatomy</h2><p id="structureDescription">The anatomical model is loading. Select a structure in the 3D view or from the explorer.</p><div class="atlas-note" id="structureNote"></div></div>
+<div class="atlas-detail-tabs" role="tablist"><button class="active" data-detail-tab="overview">Overview</button><button data-detail-tab="anatomy">Anatomy</button><button data-detail-tab="research">Research</button><button data-detail-tab="quiz">Quiz</button></div>
+<div class="atlas-detail-content" id="detailContent" aria-live="polite"><p>Detailed information for the selected anatomical structure will appear here.</p></div>
+<div class="atlas-detail-bottom"><b>ANATOMICAL CONTEXT</b><p id="clinicalFact">This model contains selected anatomical structures. It is an educational reference, not a diagnostic tool.</p><a href="./research.html" class="atlas-research-link">Open full Research Centre <span>↗</span></a></div>
+<div class="atlas-credit">Model: BodyParts3D, © The Database Center for Life Science, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>. OrganUI curation. Expert anatomical review pending.</div>
+</aside>
 </main>
+<footer class="atlas-bottom-nav"><div class="atlas-bottom-brand">MEDWORLD <span>WORKSPACE</span></div><a href="./learning.html">Other models <b>↗</b></a><a href="./research.html">Research library <b>↗</b></a><a href="./learning.html">Learning hub <b>↗</b></a><button type="button" onclick="document.documentElement.classList.toggle('atlas-compact')">Workspace view</button></footer>
 </body></html>
