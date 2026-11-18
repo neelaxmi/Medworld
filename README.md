@@ -10,7 +10,7 @@ Medical learning platform for NEET, MBBS, BDS, Nursing, allied health sciences a
 
 ## P2 implementation branch
 - `learning.html`: Learning Place with NEET, MBBS/BDS, Nursing, allied-health and postgraduate/research pathways.
-- `heart.html`: interactive Three.js schematic heart with orbit controls, zoom, selectable chambers and major vessels.
+- `heart.html`: interactive Three.js GLB-based heart anatomy workspace with selectable source meshes, orbit controls, zoom, structure details and a camera-led 3D physiology lab.
 - `research.html`: research topic collections, medical discovery timeline and evidence standards.
 - `api/mcp.js`: Streamable HTTP MCP endpoint with Firebase ID-token authentication; read published learning content/curricula and create admin-only drafts.
 - Expanded Firestore rules for content, curricula, research papers, submissions and audit records.
@@ -25,7 +25,7 @@ Medical learning platform for NEET, MBBS, BDS, Nursing, allied health sciences a
 7. Run `npm install` and `npm run check`.
 
 ## Important limitations
-- The first heart experience is a procedural schematic model, not a validated high-fidelity anatomical GLB atlas. It is for education only and not diagnosis.
+- The current heart asset is a curated 11-group GLB model. The cinematic lab animates camera focus and illustrative blood particles along mapped mesh-centre waypoints. It is not a validated haemodynamic simulation. Valve leaflets, fine coronary branches, conduction fibres/nodes and independently deforming myocardium are not yet supplied as segmented animated meshes. The cardiac-cycle pulse effect is a subtle whole-model visual cue, not a physiological ventricular contraction. It is for education only and not diagnosis.
 - Research topic/timeline entries are introductory editorial content, not a live PubMed feed or verified paper catalogue.
 - MCP currently provides read-only published-content search/list tools and admin-only draft creation; publish/delete, user management, quiz operations, audit review and granular permissions need subsequent implementation and testing.
 - Firestore rules in Git are not automatically deployed to Firebase. Deploy and test them separately.
