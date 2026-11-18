@@ -41,7 +41,7 @@ control:[
 };
 let tab="flow",index=0,timer=null,readyTimer=null,range;
 function stop(){if(timer)clearInterval(timer);timer=null;play.textContent="▶ Play";}
-function animateStep(){const api=window.MedworldHeart;if(!api)return;api.clearFlow();api.setPulse(false);const x=datasets[tab][index];if(!api.getReady())return;if(x[3])api.focusStructure(x[3],900);if(x[4]?.length>1)api.startFlow(x[4],x[5]||"#63d5c1");if(tab==="cycle"&&[2,3,4].includes(index))api.setPulse(true);if(x[3])api.selectStructure(x[3]);}
+function animateStep(){const api=window.MedworldHeart;if(!api)return;api.clearFlow();api.setPulse(false);const x=datasets[tab][index];if(!api.getReady())return;if(x[3]){api.selectStructure(x[3]);api.focusStructure(x[3],900);}if(x[4]?.length>1)api.startFlow(x[4],x[5]||"#63d5c1");if(tab==="cycle"&&[2,3,4].includes(index))api.setPulse(true);}
 function render(){const data=datasets[tab],x=data[index];step.textContent=x[0];stepTitle.textContent=x[1];stepText.textContent=x[2];progress.style.width=((index+1)/data.length*100)+"%";if(range){range.max=String(data.length-1);range.value=String(index);}$("#mechanismPrev").disabled=index===0;$("#mechanismNext").disabled=index===data.length-1;animateStep();}
 function setTab(t){stop();tab=t;index=0;tabs.forEach(b=>b.classList.toggle("active",b.dataset.mechTab===t));render();}
 function close(){stop();clearInterval(readyTimer);dialog.hidden=true;document.body.classList.remove("atlas-dialog-open");window.MedworldHeart?.exitLab();}
