@@ -1,0 +1,7 @@
+export const learningPaths={
+neet:{title:"Start with the essentials.",description:"Build a strong foundation in biology, human anatomy and physiology with a clear progression from core concepts to exam-ready understanding.",topics:["Biology","Human anatomy","Physiology","Exam practice"]},
+mbbs:{title:"Connect structure with function.",description:"Move through pre-clinical and clinical concepts across anatomy, physiology, biochemistry and clinical foundations.",topics:["Gross anatomy","Physiology","Biochemistry","Clinical foundations"]},
+nursing:{title:"Learn for confident care.",description:"Strengthen the science behind nursing practice, from fundamentals and assessment to pathophysiology, pharmacology and patient-centred care.",topics:["Nursing foundations","Anatomy & physiology","Pharmacology","Clinical skills"]},
+allied:{title:"Build specialist understanding.",description:"Explore foundational and applied medical sciences relevant to physiotherapy and other allied health disciplines.",topics:["Functional anatomy","Movement science","Pathology","Rehabilitation"]},
+advanced:{title:"Explore beyond the textbook.",description:"Go deeper into advanced mechanisms, evidence appraisal and research methods. Verify findings against original scientific sources.",topics:["Advanced anatomy","Evidence appraisal","Research methods","Scientific writing"]}};
+export const getLearningPath=(key)=>learningPaths[key]||learningPaths.neet;
