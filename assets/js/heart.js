@@ -78,11 +78,7 @@ function start(){
 const structureCenters=new Map();
 const labelGroup=new THREE.Group();scene.add(labelGroup);let labelSprite=null,labelLeader=null,labelDot=null;
 function updateStructureLabel(id){
- labelGroup.clear();
- if(labelSprite?.material?.map)labelSprite.material.map.dispose();
- if(labelSprite?.material)labelSprite.material.dispose();
- if(labelLeader?.geometry)labelLeader.geometry.dispose();
- if(labelDot?.geometry)labelDot.geometry.dispose();
+ labelGroup.children.slice().forEach(o=>{o.geometry?.dispose();if(o.material){if(o.material.map)o.material.map.dispose();o.material.dispose();}});labelGroup.clear();
  labelSprite=labelLeader=labelDot=null;
  const p=meshCenter(id),s=byId.get(id);if(!p||!s)return;
  const canvas=document.createElement("canvas");canvas.width=640;canvas.height=112;
@@ -97,6 +93,15 @@ function updateStructureLabel(id){
  const lineGeo=new THREE.BufferGeometry().setFromPoints([anchor,labelPos.clone().add(new THREE.Vector3(0,-radius*.07,0))]);
  labelLeader=new THREE.Line(lineGeo,new THREE.LineBasicMaterial({color:s.color,depthTest:false,transparent:true,opacity:.95}));labelLeader.renderOrder=999;labelGroup.add(labelLeader);
  labelDot=new THREE.Mesh(new THREE.SphereGeometry(radius*.012,12,12),new THREE.MeshBasicMaterial({color:s.color,depthTest:false}));labelDot.position.copy(anchor);labelDot.renderOrder=1001;labelGroup.add(labelDot);
+}
+let flowLegend=null;
+function setFlowLegend(visible){
+ if(!flowLegend){
+  flowLegend=document.createElement("div");flowLegend.className="atlas-flow-legend";
+  flowLegend.innerHTML='<b>ANATOMY COLOUR KEY</b><span><i style="background:#a64b4d"></i>Myocardium</span><span><i style="background:#d34f43"></i>Oxygenated blood</span><span><i style="background:#397fb5"></i>Deoxygenated blood</span><span><i style="background:#d8cbb0"></i>Valves</span><span><i style="background:#e9c65d"></i>Conduction</span><small>Flow markers follow a mesh-derived illustrative trajectory.</small>';
+  host.appendChild(flowLegend);
+ }
+ flowLegend.hidden=!visible;
 }
 function meshCenter(id){const entry=meshes.find(x=>x.id===id);if(!entry)return null;const b=new THREE.Box3().setFromObject(entry.mesh);return b.getCenter(new THREE.Vector3());}
 function focusStructure(id,duration=1500){const p=meshCenter(id);if(!p)return false;const direction=camera.position.clone().sub(controls.target).normalize();const distance=Math.max(radius*.92,camera.position.distanceTo(controls.target)*.48);const fromTarget=controls.target.clone(),fromPos=camera.position.clone(),toTarget=p.clone(),toPos=p.clone().addScaledVector(direction,distance);const start=performance.now();function tick(now){const t=Math.min(1,(now-start)/duration),e=1-Math.pow(1-t,3);controls.target.lerpVectors(fromTarget,toTarget,e);camera.position.lerpVectors(fromPos,toPos,e);controls.update();if(t<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);return true;}
@@ -168,8 +173,8 @@ window.MedworldHeart={
  focusStructure,clearFlow,startFlow,setPulse,
  setView:(v)=>view(v==="posterior"?[0,0,-1]:v==="left"?[1,0,0]:v==="right"?[-1,0,0]:[0,0,1]),
  getReady:()=>!!model,
- enterLab:()=>{document.body.classList.add("atlas-cinematic");resize();},
- exitLab:()=>{document.body.classList.remove("atlas-cinematic");clearFlow();setPulse(false);resize();},
+ enterLab:()=>{document.body.classList.add("atlas-cinematic");setFlowLegend(true);resize();},
+ exitLab:()=>{document.body.classList.remove("atlas-cinematic");setFlowLegend(false);clearFlow();setPulse(false);resize();},
  selectStructure:(id)=>select(id)
 };
 let frame;function animate(){cancelAnimationFrame(frame);const loop=()=>{frame=requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);};loop();}load();
