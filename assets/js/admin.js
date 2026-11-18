@@ -1,0 +1,18 @@
+import {auth,db} from "./firebase.js";
+import {onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import {collection,getDocs,addDoc,serverTimestamp,query,orderBy,limit} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+const $=id=>document.getElementById(id);let authorized=false;
+function status(s){$("adminStatus").textContent=s}
+function fail(e){console.error(e);status("Access or database error: "+(e.code||"unknown"))}
+function record(title,meta,badge=""){const el=document.createElement("div");el.className="record";const left=document.createElement("div"),strong=document.createElement("strong"),small=document.createElement("small"),right=document.createElement("span");strong.textContent=title;small.textContent=meta;left.append(strong,small);right.className="record-badge";right.textContent=badge;el.append(left,right);return el}
+async function loadData(){
+ const [users,content,curricula]=await Promise.all([getDocs(query(collection(db,"users"),orderBy("createdAt","desc"),limit(50))),getDocs(query(collection(db,"content"),orderBy("updatedAt","desc"),limit(50))),getDocs(query(collection(db,"curricula"),orderBy("createdAt","desc"),limit(50)))]);
+ $("userCount").textContent=users.size;$("contentCount").textContent=content.size;$("curriculumCount").textContent=curricula.size;
+ $("contentRecords").replaceChildren();if(content.empty)$("contentRecords").textContent="No content records yet.";else content.forEach(d=>{const v=d.data();$("contentRecords").append(record(v.title||"Untitled",[v.type||"content",v.stream||"all",v.updatedAt?.toDate?.().toLocaleDateString()||"Recently added"].join(" · "),v.status||"draft"))});
+ $("userRecords").replaceChildren();if(users.empty)$("userRecords").textContent="No learner profiles yet.";else users.forEach(d=>{const v=d.data();$("userRecords").append(record(v.displayName||"Learner",v.email||"Email not provided",v.stream||"free"))});
+}
+onAuthStateChanged(auth,async user=>{if(!user){status("Sign in with an administrator account to continue.");setTimeout(()=>location.href="./",1400);return}try{const token=await user.getIdTokenResult(true);if(token.claims.admin!==true){status("Access denied. Administrator custom claim required.");return}authorized=true;status("Administrator verified · "+(user.email||""));await loadData()}catch(e){fail(e)}});
+$("adminSignOut").onclick=async()=>{await signOut(auth);location.href="./"};
+$("refreshRecords").onclick=()=>{if(authorized)loadData().catch(fail)};
+$("contentForm").onsubmit=async e=>{e.preventDefault();if(!authorized)return;const button=$("saveContent");button.disabled=true;try{await addDoc(collection(db,"content"),{title:$("contentTitle").value.trim(),type:$("contentType").value,stream:$("contentStream").value,body:$("contentBody").value.trim(),status:"draft",createdAt:serverTimestamp(),updatedAt:serverTimestamp(),createdBy:auth.currentUser.uid});$("contentForm").reset();$("contentMessage").textContent="Saved as draft. Review before publishing.";await loadData()}catch(err){$("contentMessage").textContent="Save failed: "+err.code}finally{button.disabled=false}};
+$("curriculumForm").onsubmit=async e=>{e.preventDefault();if(!authorized)return;const button=e.submitter;button.disabled=true;try{await addDoc(collection(db,"curricula"),{title:$("topicTitle").value.trim(),stream:$("topicStream").value,level:$("topicLevel").value,objective:$("topicObjective").value.trim(),status:"draft",createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$("curriculumForm").reset();$("curriculumMessage").textContent="Curriculum topic saved as draft.";await loadData()}catch(err){$("curriculumMessage").textContent="Save failed: "+err.code}finally{button.disabled=false}};
