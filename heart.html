@@ -20,6 +20,16 @@
 </aside>
 <section class="atlas-main">
 <div class="atlas-main-head"><div><div class="atlas-eyebrow">ANATOMY LAB / 01</div><h1>Human <em>heart</em></h1><p>Select a visible structure or choose it from the explorer. The information panels update with your selection.</p></div><div class="atlas-model-tag"><span class="atlas-live-dot"></span> 3D MODEL WORKSPACE</div></div>
+<section class="atlas-phase-panel" aria-label="Heart anatomical layers">
+<div class="atlas-phase-heading"><div><span>ANATOMICAL DISSECTION</span><b>Explore the same heart, layer by layer</b></div><small id="activePhaseNote">External myocardium and outer heart structures</small></div>
+<div class="atlas-phase-tabs">
+<button type="button" class="atlas-phase active" data-phase="muscle"><b>01</b><span>Muscle / External</span><small>Outer heart</small></button>
+<button type="button" class="atlas-phase" data-phase="vascular"><b>02</b><span>Vascular</span><small>Coronary vessels</small></button>
+<button type="button" class="atlas-phase" data-phase="neural"><b>03</b><span>Nerve & conduction</span><small>Electrical pathways</small></button>
+<button type="button" class="atlas-phase" data-phase="internal"><b>04</b><span>Internal</span><small>Chambers & valves</small></button>
+<button type="button" class="atlas-phase" data-phase="deep"><b>05</b><span>Deep structures</span><small>Papillary muscles</small></button>
+<button type="button" class="atlas-phase disabled" disabled title="Requires a dedicated microscopic mesh"><b>06</b><span>Microscopic</span><small>Model needed</small></button>
+</div></section>
 <div class="atlas-viewer">
 <div id="heartCanvas" aria-label="Interactive 3D anatomical heart model"></div>
 <div class="atlas-loading" id="modelLoading"><div id="loadingText">Loading anatomical model…</div><div class="atlas-progress"><span id="loadingProgress"></span></div></div>
