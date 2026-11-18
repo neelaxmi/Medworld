@@ -13,10 +13,10 @@ const dialog=$("#mechanismDialog"),mechVisual=$("#mechanismVisual"),step=$("#mec
 const datasets={
 cycle:[
 ["PHASE 01 / 06","Passive ventricular filling","During diastole, ventricular pressure is below atrial pressure. The atrioventricular valves are open and blood flows from the atria into the ventricles. The semilunar valves remain closed."],
-["PHASE 02 / 06","Atrial systole","Atrial depolarisation precedes atrial contraction. The atria contract and add the final portion of ventricular filling; the AV valves remain open."],
-["PHASE 03 / 06","Isovolumetric contraction","Ventricular depolarisation initiates contraction. Ventricular pressure rises and the mitral and tricuspid valves close (S1). For a brief interval, all valves are closed and ventricular volume is unchanged."],
+["PHASE 02 / 06","Atrial systole","The P wave on a surface ECG represents atrial depolarisation. Atrial contraction adds the final portion of ventricular filling; the AV valves remain open."],
+["PHASE 03 / 06","Isovolumetric contraction","The QRS complex represents ventricular depolarisation. Ventricular pressure rises and the mitral and tricuspid valves close (S1). For a brief interval, all valves are closed and ventricular volume is unchanged."],
 ["PHASE 04 / 06","Ventricular ejection","When ventricular pressure exceeds aortic and pulmonary arterial pressure, the aortic and pulmonary valves open. Blood is ejected into the aorta and pulmonary trunk."],
-["PHASE 05 / 06","Isovolumetric relaxation","Ventricles relax. When arterial pressure exceeds ventricular pressure, the aortic and pulmonary valves close (S2). All valves are briefly closed while ventricular pressure falls."],
+["PHASE 05 / 06","Isovolumetric relaxation","The T wave corresponds to ventricular repolarisation. Ventricles relax; when arterial pressure exceeds ventricular pressure, the aortic and pulmonary valves close (S2). All valves are briefly closed while ventricular pressure falls."],
 ["PHASE 06 / 06","Ventricular filling begins again","When ventricular pressure falls below atrial pressure, the AV valves open and filling resumes. The cycle repeats. Timing and pressures vary with heart rate and loading."]
 ],
 flow:[
